@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -13,6 +15,10 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 initialPosition; // Store the initial position
     private float lastDodgeTime = -Mathf.Infinity; // Initialize to a very early time
     private Rigidbody playerRigidbody;
+
+
+    public Image[] hearts; // Array to hold references to the heart UI Images
+    private int lives = 3; // Starting lives
 
     void Start()
     {
@@ -67,13 +73,27 @@ public class PlayerMovement : MonoBehaviour
         
 
         // Check if the player's Y position falls below -50
-        if (transform.position.y < -20)
+        if (transform.position.y < -20 && lives > 0)
         {
             // If so, reset the player's position to the initial position
             transform.position = initialPosition;
+            LoseLife();
         }
     }
     
+    void LoseLife()
+    {
+        if (lives > 0)
+        {
+            lives--; // Decrease lives
+            hearts[lives].enabled = false; // Hide the last heart
+
+            if (lives <= 0)
+            {
+                Debug.Log("Game Over");
+            }
+        }
+    }
 
 void Shoot()
 {
