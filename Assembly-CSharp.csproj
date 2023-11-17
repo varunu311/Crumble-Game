@@ -65,7 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\BulletMovement.cs" />
+    <Compile Include="Assets\Scripts\PowerUpGenerationScript.cs" />
     <Compile Include="Assets\Scripts\GridGeneratorScript.cs" />
+    <Compile Include="Assets\Scripts\PowerUpScript.cs" />
     <Compile Include="Assets\Scripts\DisappearingObject.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
   </ItemGroup>

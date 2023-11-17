@@ -356,6 +356,8 @@
 "Assets/Scripts/DisappearingObject.cs"
 "Assets/Scripts/GridGeneratorScript.cs"
 "Assets/Scripts/PlayerMovement.cs"
+"Assets/Scripts/PowerUpGenerationScript.cs"
+"Assets/Scripts/PowerUpScript.cs"
 -langversion:9.0
 
 /deterministic
