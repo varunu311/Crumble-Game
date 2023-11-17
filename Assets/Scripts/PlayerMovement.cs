@@ -8,10 +8,12 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 7.0f;
     public GameObject bulletPrefab; // Reference to your bullet prefab
     public float bulletSpeed = 10.0f;
+    public float dodgeForce = 10.0f;
+    public float dodgeCooldown = 0.5f;
 
     private bool isGrounded;
     private Vector3 initialPosition; // Store the initial position
-
+    private float lastDodgeTime = -Mathf.Infinity; // Initialize to a very early time
     private Rigidbody playerRigidbody;
 
     void Start()
@@ -27,8 +29,6 @@ public class PlayerMovement : MonoBehaviour
     {
         // Check if the player is grounded.
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 1f);
-        Debug.Log(isGrounded);
-
         // Get input for movement.
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
@@ -47,6 +47,17 @@ public class PlayerMovement : MonoBehaviour
             GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
+        //doge logic
+        if (Input.GetKeyDown(KeyCode.Keypad0) && Time.time - lastDodgeTime > dodgeCooldown)
+        {
+            if (moveDirection != Vector3.zero)
+            {
+                Debug.Log("Dodge!");
+                playerRigidbody.AddForce(moveDirection * dodgeForce, ForceMode.Impulse);
+                lastDodgeTime = Time.time; // Update the last dodge time
+            }
+        }
+
         // Shooting logic
         if (Input.GetKeyDown(KeyCode.Return)) // You can customize the input button
         {
@@ -55,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Check if the player's Y position falls below -50
-        if (transform.position.y < -50)
+        if (transform.position.y < -20)
         {
             // If so, reset the player's position to the initial position
             transform.position = initialPosition;
@@ -64,11 +75,19 @@ public class PlayerMovement : MonoBehaviour
 
     void Shoot()
     {
-        // Instantiate and spawn the bullet, as you did before.
-        // But remove the bullet movement logic from this script.
         if (bulletPrefab != null)
         {
-            GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+            // Instantiate the bullet slightly in front of the player to avoid collision
+            Vector3 bulletSpawnPosition = transform.position + transform.forward * 1.0f;
+            GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPosition, transform.rotation);
+
+            // Assuming the bullet has a Rigidbody component
+            Rigidbody bulletRigidbody = bullet.GetComponent<Rigidbody>();
+            if (bulletRigidbody != null)
+            {
+                // Apply force to the bullet, not the player
+                bulletRigidbody.AddForce(transform.forward * bulletSpeed, ForceMode.Impulse);
+            }
         }
     }
 }
