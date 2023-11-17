@@ -8,7 +8,7 @@ public class GridGeneratorScript : MonoBehaviour
     public int gridSizeY = 5;
     public float spacing = 1.0f;
 
-    private GameObject[,] gridTiles; // Array to store references to tiles
+    public GameObject[,] gridTiles; // Array to store references to tiles
 
     void Start()
     {
