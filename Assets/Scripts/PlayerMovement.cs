@@ -7,15 +7,35 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 5.0f;
     public float jumpForce = 7.0f;
     public GameObject bulletPrefab; // Reference to your bullet prefab
+    public GameObject powerup; 
+    
     public float bulletSpeed = 10.0f;
-
+    
+    private GameObject powerupI; 
+    private float xRange = 20; 
+    private float yRange = 30;
     private bool isGrounded;
     private Vector3 initialPosition; // Store the initial position
 
     private Rigidbody playerRigidbody;
 
+    private void OnCollisionEnter(Collision collision){
+        if (collision.gameObject.CompareTag("powerup")) {
+            UpdateRandomPosition();
+            Debug.Log("collision triggered");
+        }
+    }
+
     void Start()
     {
+        Vector3 powerupPos = new Vector3(10, 1.5f, 5);
+        Quaternion powerupRot = Quaternion.identity; 
+        powerupI = Instantiate(powerup, powerupPos, powerupRot);
+
+        if (powerupI != null){
+            powerupI.gameObject.tag = "powerup";
+        }
+
         playerRigidbody = GetComponent<Rigidbody>();
         initialPosition = transform.position; // Store the initial position
 
@@ -23,12 +43,18 @@ public class PlayerMovement : MonoBehaviour
         playerRigidbody.freezeRotation = true;
     }
 
+    void UpdateRandomPosition(){
+        Vector3 randomPos = new Vector3(Random.Range(0, xRange), 1.5f, Random.Range(0, yRange) );
+
+        if (powerupI != null){
+            powerupI.transform.position = randomPos; 
+        }
+    }
+
     void Update()
     {
         // Check if the player is grounded.
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 1f);
-        Debug.Log(isGrounded);
-
         // Get input for movement.
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
@@ -43,7 +69,6 @@ public class PlayerMovement : MonoBehaviour
         // Jump when the player is grounded and the space bar is pressed.
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Jumped");
             GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
@@ -60,6 +85,8 @@ public class PlayerMovement : MonoBehaviour
             // If so, reset the player's position to the initial position
             transform.position = initialPosition;
         }
+
+        // check for collison with 
     }
 
     void Shoot()
